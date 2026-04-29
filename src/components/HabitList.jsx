@@ -15,8 +15,8 @@ export default function HabitList({
   const [name, setName] = useState("");
   const [presetColor, setPresetColor] = useState(PRESET_COLORS[0]);
   const [customColor, setCustomColor] = useState(PRESET_COLORS[0]);
-  const [weeklyTarget, setWeeklyTarget] = useState(5);
-  const [plannedSkipDaysPerYear, setPlannedSkipDaysPerYear] = useState(0);
+  const [weeklyTarget, setWeeklyTarget] = useState("5");
+  const [plannedSkipDaysPerYear, setPlannedSkipDaysPerYear] = useState("0");
 
   const activeHabits = useMemo(() => habits.filter((habit) => !habit.archived), [habits]);
 
@@ -85,7 +85,8 @@ export default function HabitList({
               min="1"
               step="1"
               value={weeklyTarget}
-              onChange={(event) => setWeeklyTarget(Number(event.target.value || 1))}
+              onChange={(event) => setWeeklyTarget(event.target.value)}
+              onBlur={() => setWeeklyTarget(String(Math.max(1, Math.round(Number(weeklyTarget) || 1))))}
             />
           </label>
 
@@ -96,7 +97,8 @@ export default function HabitList({
               min="0"
               step="1"
               value={plannedSkipDaysPerYear}
-              onChange={(event) => setPlannedSkipDaysPerYear(Number(event.target.value || 0))}
+              onChange={(event) => setPlannedSkipDaysPerYear(event.target.value)}
+              onBlur={() => setPlannedSkipDaysPerYear(String(Math.max(0, Math.round(Number(plannedSkipDaysPerYear) || 0))))}
             />
           </label>
 

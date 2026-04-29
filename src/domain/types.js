@@ -4,5 +4,6 @@ export const EMPTY_DATA = {
   habits: [],
   selectedHabitId: null,
   completions: {},
-  skips: {}
+  skips: {},
+  notes: {}
 };

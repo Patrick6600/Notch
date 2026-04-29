@@ -120,8 +120,10 @@ export function deleteHabit(data, habitId) {
   const remainingHabits = data.habits.filter((habit) => habit.id !== habitId);
   const nextCompletions = { ...data.completions };
   const nextSkips = { ...data.skips };
+  const nextNotes = { ...data.notes };
   delete nextCompletions[habitId];
   delete nextSkips[habitId];
+  delete nextNotes[habitId];
 
   const selectedHabitId =
     data.selectedHabitId === habitId ? (remainingHabits[0]?.id ?? null) : data.selectedHabitId;
@@ -131,6 +133,7 @@ export function deleteHabit(data, habitId) {
     habits: remainingHabits,
     selectedHabitId,
     completions: nextCompletions,
-    skips: nextSkips
+    skips: nextSkips,
+    notes: nextNotes
   };
 }

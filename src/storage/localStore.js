@@ -22,7 +22,8 @@ export function loadData() {
       habits,
       selectedHabitId,
       completions: parsed.completions && typeof parsed.completions === "object" ? parsed.completions : {},
-      skips: parsed.skips && typeof parsed.skips === "object" ? parsed.skips : {}
+      skips: parsed.skips && typeof parsed.skips === "object" ? parsed.skips : {},
+      notes: parsed.notes && typeof parsed.notes === "object" ? parsed.notes : {}
     };
   } catch {
     return EMPTY_DATA;

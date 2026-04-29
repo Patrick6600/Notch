@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { formatCount, formatPercent, getHabitDetailsStats, getPlanningSummary } from "../domain/stats";
 import { getTodayDayKey } from "../domain/dayKey";
+import { getNotesForHabit } from "../domain/notes";
+import HabitJournal from "./HabitJournal";
 
 function getProgressPercent(completed, expected) {
   if (!expected || expected <= 0) {
@@ -13,12 +15,20 @@ export default function HabitDetails({
   habit,
   completions,
   skips,
+  notes,
   onUpdatePlanning,
-  onUpdateHabitName
+  onUpdateHabitName,
+  onUpdateGeneralNote,
+  onAddLog,
+  onUpdateLog,
+  onDeleteLog
 }) {
   const todayDayKey = getTodayDayKey();
   const planning = getPlanningSummary(habit);
+  const [activeTab, setActiveTab] = useState("stats");
   const [nameDraft, setNameDraft] = useState(habit.name);
+  const [weeklyTargetDraft, setWeeklyTargetDraft] = useState(String(planning.weeklyTarget));
+  const [plannedSkipsDraft, setPlannedSkipsDraft] = useState(String(planning.plannedSkipDaysPerYear));
   const stats = useMemo(
     () => getHabitDetailsStats(habit, completions, skips, todayDayKey),
     [habit, completions, skips, todayDayKey]
@@ -26,7 +36,9 @@ export default function HabitDetails({
 
   useEffect(() => {
     setNameDraft(habit.name);
-  }, [habit.id, habit.name]);
+    setWeeklyTargetDraft(String(planning.weeklyTarget));
+    setPlannedSkipsDraft(String(planning.plannedSkipDaysPerYear));
+  }, [habit.id]);
 
   function updateWeeklyTarget(value) {
     onUpdatePlanning(habit.id, value, planning.plannedSkipDaysPerYear);
@@ -50,9 +62,41 @@ export default function HabitDetails({
     { label: "Rolling 30 days", stats: stats.rolling30Stats }
   ];
 
+  const habitNotes = getNotesForHabit({ notes }, habit.id);
+
   return (
     <aside className="panel details-panel">
-      <h2>Habit Details</h2>
+      <div className="details-header">
+        <h2>Habit Details</h2>
+        <div className="tab-toggle">
+          <button
+            type="button"
+            className={activeTab === "stats" ? "tab-btn active" : "tab-btn"}
+            onClick={() => setActiveTab("stats")}
+          >
+            Stats
+          </button>
+          <button
+            type="button"
+            className={activeTab === "journal" ? "tab-btn active" : "tab-btn"}
+            onClick={() => setActiveTab("journal")}
+          >
+            Journal
+          </button>
+        </div>
+      </div>
+
+      {activeTab === "journal" ? (
+        <HabitJournal
+          habit={habit}
+          habitNotes={habitNotes}
+          onUpdateGeneralNote={onUpdateGeneralNote}
+          onAddLog={onAddLog}
+          onUpdateLog={onUpdateLog}
+          onDeleteLog={onDeleteLog}
+        />
+      ) : (
+        <>
       <label className="details-name-field">
         Habit name
         <input
@@ -73,8 +117,13 @@ export default function HabitDetails({
               type="number"
               min="1"
               step="1"
-              value={planning.weeklyTarget}
-              onChange={(event) => updateWeeklyTarget(Number(event.target.value || 1))}
+              value={weeklyTargetDraft}
+              onChange={(event) => setWeeklyTargetDraft(event.target.value)}
+              onBlur={() => {
+                const parsed = Math.max(1, Math.round(Number(weeklyTargetDraft) || 1));
+                setWeeklyTargetDraft(String(parsed));
+                updateWeeklyTarget(parsed);
+              }}
             />
           </label>
           <label>
@@ -83,8 +132,13 @@ export default function HabitDetails({
               type="number"
               min="0"
               step="1"
-              value={planning.plannedSkipDaysPerYear}
-              onChange={(event) => updatePlannedSkips(Number(event.target.value || 0))}
+              value={plannedSkipsDraft}
+              onChange={(event) => setPlannedSkipsDraft(event.target.value)}
+              onBlur={() => {
+                const parsed = Math.max(0, Math.round(Number(plannedSkipsDraft) || 0));
+                setPlannedSkipsDraft(String(parsed));
+                updatePlannedSkips(parsed);
+              }}
             />
           </label>
           <p className="muted">
@@ -137,6 +191,8 @@ export default function HabitDetails({
           </li>
         </ul>
       </section>
+        </>
+      )}
     </aside>
   );
 }

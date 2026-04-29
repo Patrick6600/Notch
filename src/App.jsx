@@ -56,8 +56,13 @@ export default function App() {
             habit={selectedHabit}
             completions={data.completions}
             skips={data.skips}
+            notes={data.notes}
             onUpdatePlanning={actions.updateHabitPlanning}
             onUpdateHabitName={actions.updateHabitName}
+            onUpdateGeneralNote={actions.updateGeneralNote}
+            onAddLog={actions.addLog}
+            onUpdateLog={actions.updateLog}
+            onDeleteLog={actions.deleteLog}
           />
         ) : (
           <aside className="panel side-placeholder">

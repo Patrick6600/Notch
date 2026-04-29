@@ -8,6 +8,7 @@ import {
   updateHabitPlanning,
   updateHabitColor
 } from "../domain/habits";
+import { addLog, deleteLog, updateGeneralNote, updateLog } from "../domain/notes";
 import { loadData, saveData } from "../storage/localStore";
 
 export function useNotchData() {
@@ -31,7 +32,13 @@ export function useNotchData() {
         setData((prev) => updateHabitColor(prev, habitId, color)),
       updateHabitPlanning: (habitId, weeklyTarget, plannedSkipDaysPerYear) =>
         setData((prev) => updateHabitPlanning(prev, habitId, weeklyTarget, plannedSkipDaysPerYear)),
-      deleteHabit: (habitId) => setData((prev) => deleteHabit(prev, habitId))
+      deleteHabit: (habitId) => setData((prev) => deleteHabit(prev, habitId)),
+      updateGeneralNote: (habitId, text) =>
+        setData((prev) => updateGeneralNote(prev, habitId, text)),
+      addLog: (habitId, title, body) => setData((prev) => addLog(prev, habitId, title, body)),
+      updateLog: (habitId, logId, title, body) =>
+        setData((prev) => updateLog(prev, habitId, logId, title, body)),
+      deleteLog: (habitId, logId) => setData((prev) => deleteLog(prev, habitId, logId))
     }),
     []
   );
