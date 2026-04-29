@@ -489,6 +489,7 @@ body {
 
 button,
 input,
+textarea,
 select {
   font: inherit;
 }
@@ -508,6 +509,7 @@ button:hover {
 }
 
 input,
+textarea,
 select {
   background: #141414;
   color: var(--text-primary);
@@ -515,7 +517,8 @@ select {
   border-radius: 8px;
 }
 
-input::placeholder {
+input::placeholder,
+textarea::placeholder {
   color: var(--text-secondary);
 }
 
